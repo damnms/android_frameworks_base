@@ -491,6 +491,11 @@
          com.android.networkstack.tethering.R.string.config_wifi_tether_enable instead. -->
     <string translatable="false" name="config_wifi_tether_enable">com.android.settings/.wifi.tether.TetherService</string>
 
+    <!-- Whether the device can connect to access points that only offer the SHA256 key
+         management suites (PSK-SHA256, EAP-SHA256), e.g. WPA2 with PMF required. Wi-Fi
+         pickers mark networks the device cannot join as not supported. -->
+    <bool translatable="false" name="config_wifiSha256AkmSupported">true</bool>
+
     <!-- This setting is deprecated, please use
          com.android.networkstack.tethering.R.array.config_tether_upstream_types. -->
     <integer-array translatable="false" name="config_tether_upstream_types">
