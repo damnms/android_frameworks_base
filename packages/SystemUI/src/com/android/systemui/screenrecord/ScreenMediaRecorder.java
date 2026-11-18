@@ -29,7 +29,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
-import android.media.MediaCodecInfo;
 import android.media.MediaMuxer;
 import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
@@ -136,9 +135,9 @@ public class ScreenMediaRecorder {
         int vidBitRate = screenHeight * screenWidth * refereshRate / VIDEO_FRAME_RATE
                 * VIDEO_FRAME_RATE_TO_RESOLUTION_RATIO;
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-        mMediaRecorder.setVideoEncodingProfileLevel(
-                MediaCodecInfo.CodecProfileLevel.AVCProfileMain,
-                MediaCodecInfo.CodecProfileLevel.AVCLevel3);
+        // Do not force a profile and level: AVC level 3 allows at most 1620 macroblocks per
+        // frame, far below a full screen, and some encoders hang instead of failing when asked
+        // for it. Without a profile the encoder uses baseline at a level of its own choice.
         mMediaRecorder.setVideoSize(screenWidth, screenHeight);
         mMediaRecorder.setVideoFrameRate(refereshRate);
         mMediaRecorder.setVideoEncodingBitRate(vidBitRate);
