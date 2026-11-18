@@ -28,6 +28,7 @@ import android.util.Log;
 import com.android.settingslib.wifi.AccessPoint;
 import com.android.settingslib.wifi.WifiTracker;
 import com.android.settingslib.wifi.WifiTracker.WifiListener;
+import com.android.wifitrackerlib.WifiSecuritySupport;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class AccessPointControllerImpl
     private final UserManager mUserManager;
 
     private int mCurrentUser;
+    private WifiSecuritySupport mSecuritySupport;
 
     public AccessPointControllerImpl(Context context) {
         mContext = context;
@@ -112,8 +114,16 @@ public class AccessPointControllerImpl
         } else {
             // Unknown network, need to add it.
             if (ap.getSecurity() != AccessPoint.SECURITY_NONE) {
+                if (mSecuritySupport == null) {
+                    mSecuritySupport = new WifiSecuritySupport(mContext,
+                            mWifiTracker.getManager());
+                }
                 Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
-                intent.putExtra(EXTRA_START_CONNECT_SSID, ap.getSsidStr());
+                // The Wi-Fi list explains why a network the device cannot join is not
+                // supported; the password page would only end in a failed connection.
+                if (mSecuritySupport.isSupported(ap.getScanResults())) {
+                    intent.putExtra(EXTRA_START_CONNECT_SSID, ap.getSsidStr());
+                }
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 fireSettingsIntentCallback(intent);
                 return true;
