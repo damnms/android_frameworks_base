@@ -341,7 +341,7 @@ public class KeyButtonDrawable extends Drawable {
         canvas.restore();
 
         if (mState.mIsHardwareBitmap) {
-            bitmap = copyToHardwareOrKeep(bitmap);
+            bitmap = bitmap.copy(Bitmap.Config.HARDWARE, false);
         }
         mState.mLastDrawnIcon = bitmap;
     }
@@ -378,19 +378,9 @@ public class KeyButtonDrawable extends Drawable {
         canvas.drawBitmap(shadow, offset[0], offset[1], paint);
 
         if (mState.mIsHardwareBitmap) {
-            bitmap = copyToHardwareOrKeep(bitmap);
+            bitmap = bitmap.copy(Bitmap.Config.HARDWARE, false);
         }
         mState.mLastDrawnShadow = bitmap;
-    }
-
-    /**
-     * Copies the bitmap to a hardware bitmap. Some legacy gralloc implementations reject
-     * texture-only buffers, so copy() returns null; keep the software bitmap in that case
-     * instead of crashing in draw().
-     */
-    private static Bitmap copyToHardwareOrKeep(Bitmap bitmap) {
-        final Bitmap hardwareBitmap = bitmap.copy(Bitmap.Config.HARDWARE, false);
-        return hardwareBitmap != null ? hardwareBitmap : bitmap;
     }
 
     /**
