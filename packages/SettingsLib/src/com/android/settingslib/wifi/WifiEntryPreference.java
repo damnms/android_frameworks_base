@@ -146,6 +146,9 @@ public class WifiEntryPreference extends Preference implements WifiEntry.WifiEnt
         }
 
         setSummary(mWifiEntry.getSummary(false /* concise */));
+        // Grey out networks the device cannot join. Saved ones stay enabled so they can
+        // still be opened and forgotten.
+        setEnabled(mWifiEntry.isSaved() || mWifiEntry.isSecuritySupported());
         mContentDescription = buildContentDescription();
     }
 
